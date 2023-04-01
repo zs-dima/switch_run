@@ -10,6 +10,7 @@ void main(List<String> arguments) async {
   // editbin.exe /subsystem:windows switch-run.exe
 
   final parser = ArgParser() //
+    ..addOption('run', abbr: 'r', help: 'Run command when no shortcut key is pressed')
     ..addOption('alt', abbr: 'a', help: 'Run command when Alt is pressed')
     ..addOption('ctrl', abbr: 'c', help: 'Run command when Ctrl is pressed')
     ..addOption('shift', abbr: 's', help: 'Run command when Shift is pressed')
@@ -31,17 +32,25 @@ void main(List<String> arguments) async {
     Directory.current = args['path'].toString();
   }
 
-  for (final option in args.options.where((o) => Keys.keys.keys.contains(o))) {
-    final commandText = args[option]?.toString();
-    final key = Keys.keys[option];
-
-    if (key == null) {
-      stderr.writeln('Unknown key: $option');
-      continue;
-    }
-
-    if (commandText != null && await Keyboard.keyPressed(key)) {
+  final options = args.options.where((o) => Keys.keys.keys.contains(o)).toList();
+  if (options.isEmpty) {
+    if (args['run'] != null) {
+      final commandText = args['run']!.toString();
       await Command.from(commandText).execute();
+    }
+  } else {
+    for (final option in options) {
+      final commandText = args[option]?.toString();
+      final key = Keys.keys[option];
+
+      if (key == null) {
+        stderr.writeln('Unknown key: $option');
+        continue;
+      }
+
+      if (commandText != null && await Keyboard.keyPressed(key)) {
+        await Command.from(commandText).execute();
+      }
     }
   }
 
