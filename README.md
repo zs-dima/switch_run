@@ -5,6 +5,7 @@
 
 ```bash
 switch-run.exe -h
+switch-run.exe -a notepad.exe text.txt -c notepad++.exe text.txt
 ```
 
 ```
