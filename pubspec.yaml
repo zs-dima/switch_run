@@ -1,0 +1,17 @@
+name: switch_run
+description: Run command depends on shortcut pressed at startup
+version: 1.0.0
+repository: https://github.com/zs-dima/switch_run
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+
+dependencies:
+  meta: ^1.8.0
+  args: ^2.4.0
+  path: ^1.8.3
+  win32: ^4.1.1
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
