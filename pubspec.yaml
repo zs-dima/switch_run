@@ -10,7 +10,8 @@ dependencies:
   meta: ^1.8.0
   args: ^2.4.0
   path: ^1.8.3
-  win32: ^4.1.1
+  ffi: ^2.0.1
+  # win32: ^4.1.1
 
 dev_dependencies:
   lints: ^2.0.0

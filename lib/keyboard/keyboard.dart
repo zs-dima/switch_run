@@ -12,6 +12,7 @@ class Key {
 }
 
 class Keys {
+  // https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
   static const Key alt = Key('alt', 0x12, 56);
   static const Key ctrl = Key('ctrl', 0x11, 29);
   static const Key shift = Key('shift', 0x10, 42);
@@ -35,5 +36,18 @@ class Keyboard {
       return windows.keyPressed(key.windowsCode);
     }
     return false;
+  }
+
+  static Future<List<Key>> keysPressed() async {
+    if (io.Platform.isLinux) {
+      await linux.loadLibrary();
+      final keys = linux.keysPressed();
+      return keys.map((k) => Keys.keys.values.firstWhere((v) => v.linuxCode == k)).toList();
+    } else if (io.Platform.isWindows) {
+      await windows.loadLibrary();
+      final keys = windows.keysPressed();
+      return keys.map((k) => Keys.keys.values.firstWhere((v) => v.windowsCode == k)).toList();
+    }
+    return [];
   }
 }
