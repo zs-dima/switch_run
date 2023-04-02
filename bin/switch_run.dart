@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:collection/collection.dart';
 import 'package:switch_run/args_x.dart';
 import 'package:switch_run/command.dart';
 import 'package:switch_run/keyboard/keyboard.dart';
@@ -43,34 +44,21 @@ void main(List<String> arguments) async {
     (command) => Command.from(command).execute(),
   );
 
-  final options = args.options.where((o) => Keys.keys.keys.contains(o)).toList();
-  if (options.isEmpty) {
-    await args.execute(
-      'run',
-      (command) => Command.from(command).execute(),
-    );
-  } else {
-    for (final option in options) {
-      final commandText = args[option]?.toString();
-      final key = Keys.keys[option];
+  final keysPressed = await Keyboard.keysPressed();
+  final keys = keysPressed.map((k) => k.name).toList();
+  final option = args.options.firstWhereOrNull(keys.contains);
 
-      if (key == null) {
-        stderr.writeln('Unknown key: $option');
-        continue;
-      }
-
-      if (commandText != null && await Keyboard.keyPressed(key)) {
-        await Command.from(commandText).execute();
-      }
-    }
-  }
+  await args.execute(
+    option ?? 'run',
+    (command) => Command.from(command).execute(),
+  );
 
   await args.execute(
     'after',
     (command) => Command.from(command).execute(),
   );
 
-  if (args['help'] != null) {
+  if (args.wasParsed('help')) {
     stdout.writeln(parser.usage);
   }
 }

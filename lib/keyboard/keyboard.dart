@@ -42,11 +42,11 @@ class Keyboard {
     if (io.Platform.isLinux) {
       await linux.loadLibrary();
       final keys = linux.keysPressed();
-      return keys.map((k) => Keys.keys.values.firstWhere((v) => v.linuxCode == k)).toList();
+      return Keys.keys.values.where((k) => keys.contains(k.linuxCode)).toList();
     } else if (io.Platform.isWindows) {
       await windows.loadLibrary();
       final keys = windows.keysPressed();
-      return keys.map((k) => Keys.keys.values.firstWhere((v) => v.windowsCode == k)).toList();
+      return Keys.keys.values.where((k) => keys.contains(k.windowsCode)).toList();
     }
     return [];
   }
